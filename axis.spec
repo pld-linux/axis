@@ -7,6 +7,7 @@ Release:	0.1
 License:	Apache Software License
 Group:		Development/Libraries
 Source0:	http://www.apache.org/dist/ws/axis-c/source/linux/%{name}-c-src-%{fversion}-linux.tar.gz
+# Source0-md5:	9c68ba2f2d8029aed0694881bc2f491b
 URL:		http://ws.apache.org/%{name}/
 BuildRequires:	expat-devel
 BuildRequires:	xerces-c-devel
