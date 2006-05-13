@@ -3,14 +3,15 @@
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
+Summary(pl):	Implementacja SOAP w Javie
 Name:		axis
 Version:	1.2.1
 Release:	0.2jpp.1
 License:	Apache Software License
 Group:		Development/Languages/Java
-URL:		http://ws.apache.org/axis/
-Source0:	%{url}/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
+Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	157ad070accf373565bce80de1204a4d
+URL:		http://ws.apache.org/axis/
 #BuildRequires:	ant-nodeps
 BuildRequires:	jakarta-ant >= 1.6
 BuildRequires:	jdk
@@ -62,19 +63,42 @@ and responses.
 
 This project is a follow-on to the Apache SOAP project.
 
+%description -l pl
+Apache AXIS to implementacja SOAP ("Simple Object Access Protocol")
+przekazanego do W3C.
+
+Z projektu specyfikacji W3C:
+
+SOAP to lekki protokó³ do wymiany informacji w scentralizowanym,
+rozproszonym ¶rodowisku. Jest to protokó³ oparty na XML-u, sk³adaj±cy
+siê z trzech czê¶ci: koperty definiuj±cej szkielet do opisu zawarto¶ci
+i sposobu przetwarzania komunikatu, zbioru regu³ kodowania do
+wyra¿ania instancji typów danych zdefiniowanych w aplikacji oraz
+konwencji reprezentowania zdalnych wywo³añ procedur i odpowiedzi.
+
+Ten projekt jest nastêpc± projektu Apache SOAP.
+
 %package javadoc
 Summary:	Javadoc for %{name}
+Summary(pl):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Development/Languages/Java
 
 %description javadoc
 Javadoc for %{name}.
 
+%description javadoc -l pl
+Dokumentacja javadoc dla pakietu %{name}.
+
 %package manual
 Summary:	Manual for %{name}
+Summary(pl):	Podrêcznik do pakietu %{name}
 Group:		Development/Languages/Java
 
 %description manual
 Documentation for %{name}.
+
+%description manual -l pl
+Podrêcznik do pakietu %{name}.
 
 %prep
 %setup -q -n %{name}-%{archivever}
@@ -92,7 +116,8 @@ CLASSPATH=$(build-classpath wsdl4j jakarta-commons-discovery jakarta-commons-htt
 export CLASSPATH=$CLASSPATH:$(build-classpath oro junit jimi xml-security jsse httpunit jms castor 2>/dev/null)
 
 export OPT_JAR_LIST="ant/ant-nodeps"
-ant -Dcompile.ime=true \
+ant \
+	-Dcompile.ime=true \
 	-Dwsdl4j.jar=$(build-classpath wsdl4j) \
 	-Dcommons-discovery.jar=$(build-classpath jakarta-commons-discovery) \
 	-Dcommons-logging.jar=$(build-classpath jakarta-commons-logging) \
@@ -109,23 +134,22 @@ ant -Dcompile.ime=true \
 	clean compile javadocs
 
 %install
-
 rm -rf $RPM_BUILD_ROOT
 ### Jar files
 
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 cd build/lib
-   install -m 644 axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
-           $RPM_BUILD_ROOT%{_javadir}/%{name}
+install -m 644 axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
+	$RPM_BUILD_ROOT%{_javadir}/%{name}
 cd -
 
 cd $RPM_BUILD_ROOT%{_javadir}/%{name}
-	for jar in *.jar ; do
-		vjar=$(echo $jar | sed s+.jar+-%{version}.jar+g)
-		mv $jar $vjar
-		ln -fs $vjar $jar
-	done
+for jar in *.jar ; do
+	vjar=$(echo $jar | sed s+.jar+-%{version}.jar+g)
+	mv $jar $vjar
+	ln -fs $vjar $jar
+done
 cd -
 
 ### Javadoc
@@ -134,8 +158,8 @@ install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr build/javadocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 
 cd docs
-   rm -fr apiDocs
-   ln -fs %{_javadocdir}/%{name} apiDocs
+rm -fr apiDocs
+ln -fs %{_javadocdir}/%{name} apiDocs
 cd -
 
 %clean
