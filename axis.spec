@@ -13,7 +13,7 @@ Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}
 # Source0-md5:	157ad070accf373565bce80de1204a4d
 URL:		http://ws.apache.org/axis/
 #BuildRequires:	ant-nodeps
-BuildRequires:	jakarta-ant >= 1.6
+BuildRequires:	ant >= 1.6
 BuildRequires:	jdk
 # Mandatory requires
 BuildRequires:	jaf
