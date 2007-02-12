@@ -3,7 +3,7 @@
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
-Summary(pl.UTF-8):   Implementacja SOAP w Javie
+Summary(pl.UTF-8):	Implementacja SOAP w Javie
 Name:		axis
 Version:	1.2.1
 Release:	0.3
@@ -80,7 +80,7 @@ Ten projekt jest następcą projektu Apache SOAP.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Development/Languages/Java
 
 %description javadoc
@@ -91,7 +91,7 @@ Dokumentacja javadoc dla pakietu %{name}.
 
 %package manual
 Summary:	Manual for %{name}
-Summary(pl.UTF-8):   Podręcznik do pakietu %{name}
+Summary(pl.UTF-8):	Podręcznik do pakietu %{name}
 Group:		Development/Languages/Java
 
 %description manual
