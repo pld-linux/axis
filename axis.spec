@@ -3,7 +3,7 @@
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
-Summary(pl):	Implementacja SOAP w Javie
+Summary(pl.UTF-8):   Implementacja SOAP w Javie
 Name:		axis
 Version:	1.2.1
 Release:	0.3
@@ -63,42 +63,42 @@ and responses.
 
 This project is a follow-on to the Apache SOAP project.
 
-%description -l pl
+%description -l pl.UTF-8
 Apache AXIS to implementacja SOAP ("Simple Object Access Protocol")
 przekazanego do W3C.
 
 Z projektu specyfikacji W3C:
 
-SOAP to lekki protokó³ do wymiany informacji w scentralizowanym,
-rozproszonym ¶rodowisku. Jest to protokó³ oparty na XML-u, sk³adaj±cy
-siê z trzech czê¶ci: koperty definiuj±cej szkielet do opisu zawarto¶ci
-i sposobu przetwarzania komunikatu, zbioru regu³ kodowania do
-wyra¿ania instancji typów danych zdefiniowanych w aplikacji oraz
-konwencji reprezentowania zdalnych wywo³añ procedur i odpowiedzi.
+SOAP to lekki protokÃ³Å‚ do wymiany informacji w scentralizowanym,
+rozproszonym Å›rodowisku. Jest to protokÃ³Å‚ oparty na XML-u, skÅ‚adajÄ…cy
+siÄ™ z trzech czÄ™Å›ci: koperty definiujÄ…cej szkielet do opisu zawartoÅ›ci
+i sposobu przetwarzania komunikatu, zbioru reguÅ‚ kodowania do
+wyraÅ¼ania instancji typÃ³w danych zdefiniowanych w aplikacji oraz
+konwencji reprezentowania zdalnych wywoÅ‚aÅ„ procedur i odpowiedzi.
 
-Ten projekt jest nastêpc± projektu Apache SOAP.
+Ten projekt jest nastÄ™pcÄ… projektu Apache SOAP.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl):	Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
 Group:		Development/Languages/Java
 
 %description javadoc
 Javadoc for %{name}.
 
-%description javadoc -l pl
+%description javadoc -l pl.UTF-8
 Dokumentacja javadoc dla pakietu %{name}.
 
 %package manual
 Summary:	Manual for %{name}
-Summary(pl):	Podrêcznik do pakietu %{name}
+Summary(pl.UTF-8):   PodrÄ™cznik do pakietu %{name}
 Group:		Development/Languages/Java
 
 %description manual
 Documentation for %{name}.
 
-%description manual -l pl
-Podrêcznik do pakietu %{name}.
+%description manual -l pl.UTF-8
+PodrÄ™cznik do pakietu %{name}.
 
 %prep
 %setup -q -n %{name}-%{archivever}
