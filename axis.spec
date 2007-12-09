@@ -12,17 +12,19 @@ Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	157ad070accf373565bce80de1204a4d
 URL:		http://ws.apache.org/axis/
-#BuildRequires:	ant-nodeps
 BuildRequires:	ant >= 1.6
+#BuildRequires:	ant-nodeps
 BuildRequires:	jdk
 # Mandatory requires
 BuildRequires:	jaf
 BuildRequires:	jakarta-commons-discovery
 BuildRequires:	jakarta-commons-httpclient3
 BuildRequires:	jakarta-commons-logging
-BuildRequires:	jakarta-log4j
 BuildRequires:	javamail
 BuildRequires:	jaxp_parser_impl
+BuildRequires:	jpackage-utils
+BuildRequires:	logging-log4j
+BuildRequires:	rpmbuild(macros) >= 1.300
 BuildRequires:	servletapi5
 BuildRequires:	wsdl4j
 # optional requires
@@ -41,7 +43,7 @@ Requires:	jakarta-commons-logging
 Requires:	java
 Requires:	javamail
 Requires:	jaxp_parser_impl
-#Requires:	jpackage-utils >= 0:1.5
+Requires:	jpackage-utils
 Requires:	log4j
 Requires:	wsdl4j
 BuildArch:	noarch
@@ -81,7 +83,8 @@ Ten projekt jest następcą projektu Apache SOAP.
 %package javadoc
 Summary:	Javadoc for %{name}
 Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
-Group:		Development/Languages/Java
+Group:		Documentation
+Requires:	jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
@@ -104,43 +107,41 @@ Podręcznik do pakietu %{name}.
 %setup -q -n %{name}-%{archivever}
 
 # Remove provided binaries
-find . -name "*.jar" -exec rm -f {} \;
-find . -name "*.zip" -exec rm -f {} \;
-find . -name "*.class" -exec rm -f {} \;
+find -name '*.jar' | xargs rm -v
+find -name '*.zip' | xargs rm -v
+find -name '*.class' | xargs rm -v
 
 %build
-
-[ -z "$JAVA_HOME" ] && export JAVA_HOME=%{_jvmdir}/java
+export JAVA_HOME=%{java_home}
 
 CLASSPATH=$(build-classpath wsdl4j jakarta-commons-discovery jakarta-commons-httpclient3 jakarta-commons-logging log4j jaf javamail/mailapi servletapi5)
 export CLASSPATH=$CLASSPATH:$(build-classpath oro junit jimi xml-security jsse httpunit jms castor 2>/dev/null)
 
 export OPT_JAR_LIST="ant/ant-nodeps"
-ant \
+%ant \
 	-Dcompile.ime=true \
-	-Dwsdl4j.jar=$(build-classpath wsdl4j) \
-	-Dcommons-discovery.jar=$(build-classpath jakarta-commons-discovery) \
-	-Dcommons-logging.jar=$(build-classpath jakarta-commons-logging) \
-	-Dcommons-httpclient.jar=$(build-classpath jakarta-commons-httpclient3) \
-	-Dlog4j-core.jar=$(build-classpath log4j) \
-	-Dactivation.jar=$(build-classpath jaf) \
-	-Dmailapi.jar=$(build-classpath javamail/mailapi) \
-	-Dxerces.jar=$(build-classpath jaxp_parser_impl) \
-	-Dservlet.jar=$(build-classpath servletapi5) \
-	-Dregexp.jar=$(build-classpath oro 2>/dev/null) \
-	-Djunit.jar=$(build-classpath junit 2>/dev/null) \
-	-Djimi.jar=$(build-classpath jimi 2>/dev/null) \
-	-Djsse.jar=$(build-classpath jsse/jsse 2>/dev/null) \
+	-Dwsdl4j.jar=$(find-jar wsdl4j) \
+	-Dcommons-discovery.jar=$(find-jar jakarta-commons-discovery) \
+	-Dcommons-logging.jar=$(find-jar jakarta-commons-logging) \
+	-Dcommons-httpclient.jar=$(find-jar jakarta-commons-httpclient3) \
+	-Dlog4j-core.jar=$(find-jar log4j) \
+	-Dactivation.jar=$(find-jar jaf) \
+	-Dmailapi.jar=$(find-jar javamail/mailapi) \
+	-Dxerces.jar=$(find-jar jaxp_parser_impl) \
+	-Dservlet.jar=$(find-jar servletapi5) \
+	-Dregexp.jar=$(find-jar oro) \
+	-Djunit.jar=$(find-jar junit) \
+	-Djimi.jar=$(find-jar jimi) \
+	-Djsse.jar=$(find-jar jsse/jsse) \
 	clean compile javadocs
 
 %install
 rm -rf $RPM_BUILD_ROOT
 ### Jar files
-
 install -d $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 cd build/lib
-install -m 644 axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
+install axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
 	$RPM_BUILD_ROOT%{_javadir}/%{name}
 cd -
 
@@ -153,26 +154,15 @@ done
 cd -
 
 ### Javadoc
-
 install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr build/javadocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-
-cd docs
-rm -fr apiDocs
-ln -fs %{_javadocdir}/%{name} apiDocs
-cd -
+cp -a build/javadocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-	rm -f %{_javadocdir}/%{name}
-fi
+ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 
 %files
 %defattr(644,root,root,755)
@@ -182,8 +172,8 @@ fi
 
 %files javadoc
 %defattr(644,root,root,755)
-%dir %{_javadocdir}/%{name}-%{version}
-%{_javadocdir}/%{name}-%{version}/*
+%{_javadocdir}/%{name}-%{version}
+%ghost %{_javadocdir}/%{name}
 
 %files manual
 %defattr(644,root,root,755)
