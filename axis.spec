@@ -1,5 +1,4 @@
 # TODO
-#  - servletapi5 is needed by axis-1.2.1-0.2jpp.1.noarch
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
@@ -35,7 +34,6 @@ BuildRequires:	jimi
 BuildRequires:	jms
 BuildRequires:	jsse
 BuildRequires:	junit
-#BuildRequires: xml-security
 Requires:	jaf
 Requires:	jakarta-commons-discovery
 Requires:	jakarta-commons-httpclient3
@@ -43,6 +41,7 @@ Requires:	jakarta-commons-logging
 Requires:	java
 Requires:	javamail
 Requires:	jaxp_parser_impl
+Requires:	logging-log4j
 Requires:	jpackage-utils
 Requires:	log4j
 Requires:	wsdl4j
