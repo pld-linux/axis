@@ -17,7 +17,7 @@ BuildRequires:	jdk
 # Mandatory requires
 BuildRequires:	jaf
 BuildRequires:	jakarta-commons-discovery
-BuildRequires:	jakarta-commons-httpclient3
+BuildRequires:	jakarta-commons-httpclient
 BuildRequires:	jakarta-commons-logging
 BuildRequires:	javamail
 BuildRequires:	jaxp_parser_impl
@@ -36,7 +36,7 @@ BuildRequires:	jsse
 BuildRequires:	junit
 Requires:	jaf
 Requires:	jakarta-commons-discovery
-Requires:	jakarta-commons-httpclient3
+Requires:	jakarta-commons-httpclient
 Requires:	jakarta-commons-logging
 Requires:	java
 Requires:	javamail
@@ -113,7 +113,7 @@ find -name '*.class' | xargs rm -v
 %build
 export JAVA_HOME=%{java_home}
 
-CLASSPATH=$(build-classpath wsdl4j jakarta-commons-discovery jakarta-commons-httpclient3 jakarta-commons-logging log4j jaf javamail/mailapi servletapi5)
+CLASSPATH=$(build-classpath wsdl4j jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-logging log4j jaf javamail/mailapi servletapi5)
 export CLASSPATH=$CLASSPATH:$(build-classpath oro junit jimi xml-security jsse httpunit jms castor 2>/dev/null)
 
 export OPT_JAR_LIST="ant/ant-nodeps"
@@ -122,7 +122,7 @@ export OPT_JAR_LIST="ant/ant-nodeps"
 	-Dwsdl4j.jar=$(find-jar wsdl4j) \
 	-Dcommons-discovery.jar=$(find-jar jakarta-commons-discovery) \
 	-Dcommons-logging.jar=$(find-jar jakarta-commons-logging) \
-	-Dcommons-httpclient.jar=$(find-jar jakarta-commons-httpclient3) \
+	-Dcommons-httpclient.jar=$(find-jar jakarta-commons-httpclient) \
 	-Dlog4j-core.jar=$(find-jar log4j) \
 	-Dactivation.jar=$(find-jar jaf) \
 	-Dmailapi.jar=$(find-jar javamail/mailapi) \
