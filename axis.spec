@@ -1,5 +1,9 @@
 # TODO
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
+#  - package axis2, axis is obsolete. see NOTE below.
+# NOTE
+#  - it won't compile with java 1.6. see:
+#    https://fcp.surfsite.org/modules/newbb/viewtopic.php?topic_id=55862&viewmode=flat&order=ASC&start=20
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
 Summary(pl.UTF-8):	Implementacja SOAP w Javie
