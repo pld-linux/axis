@@ -1,0 +1,11 @@
+--- axis-1_4/xmls/path_refs.xml~	2006-04-23 03:56:52.000000000 +0200
++++ axis-1_4/xmls/path_refs.xml	2009-02-24 01:46:27.000000000 +0100
+@@ -11,7 +11,7 @@
+     <pathelement location="${activation.jar}"/>
+     <pathelement location="${mailapi.jar}"/>
+     <pathelement location="${tools.jar}"/>
+-    <pathelement location="${j2ee.jar}"/>
++    <pathelement location="${xmlbeans.jar}"/>
+     <pathelement location="${junit.jar}"/>
+     <pathelement location="${servlet.jar}"/>
+     <fileset dir="${lib.dir}">
