@@ -8,21 +8,23 @@
 Summary:	A SOAP implementation in Java
 Summary(pl.UTF-8):	Implementacja SOAP w Javie
 Name:		axis
-Version:	1.2.1
-Release:	0.3
+Version:	1.4
+Release:	0.1
 License:	Apache Software License
 Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
-# Source0-md5:	157ad070accf373565bce80de1204a4d
+# Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
+Source1:	axis-build.properties
+Patch0:		axis-classpath.patch
 URL:		http://ws.apache.org/axis/
 BuildRequires:	ant >= 1.6
-#BuildRequires:	ant-nodeps
+BuildRequires:	ant-nodeps
 BuildRequires:	jdk
 # Mandatory requires
 BuildRequires:	jaf
-BuildRequires:	jakarta-commons-discovery
-BuildRequires:	jakarta-commons-httpclient
-BuildRequires:	jakarta-commons-logging
+BuildRequires:	java-commons-discovery
+BuildRequires:	java-commons-httpclient
+BuildRequires:	java-commons-logging
 BuildRequires:	javamail
 BuildRequires:	jaxp_parser_impl
 BuildRequires:	jpackage-utils
@@ -110,33 +112,19 @@ Podręcznik do pakietu %{name}.
 %setup -q -n %{name}-%{archivever}
 
 # Remove provided binaries
-find -name '*.jar' | xargs rm -v
-find -name '*.zip' | xargs rm -v
+# find -name '*.jar' | xargs rm -v
 find -name '*.class' | xargs rm -v
+
+%patch0 -p1
+
+cp %SOURCE1 build.properties
 
 %build
 export JAVA_HOME=%{java_home}
 
-CLASSPATH=$(build-classpath wsdl4j jakarta-commons-discovery jakarta-commons-httpclient jakarta-commons-logging log4j jaf javamail/mailapi servletapi5)
-export CLASSPATH=$CLASSPATH:$(build-classpath oro junit jimi xml-security jsse httpunit jms castor 2>/dev/null)
-
-export OPT_JAR_LIST="ant/ant-nodeps"
-%ant \
-	-Dcompile.ime=true \
-	-Dwsdl4j.jar=$(find-jar wsdl4j) \
-	-Dcommons-discovery.jar=$(find-jar jakarta-commons-discovery) \
-	-Dcommons-logging.jar=$(find-jar jakarta-commons-logging) \
-	-Dcommons-httpclient.jar=$(find-jar jakarta-commons-httpclient) \
-	-Dlog4j-core.jar=$(find-jar log4j) \
-	-Dactivation.jar=$(find-jar jaf) \
-	-Dmailapi.jar=$(find-jar javamail/mailapi) \
-	-Dxerces.jar=$(find-jar jaxp_parser_impl) \
-	-Dservlet.jar=$(find-jar servletapi5) \
-	-Dregexp.jar=$(find-jar oro) \
-	-Djunit.jar=$(find-jar junit) \
-	-Djimi.jar=$(find-jar jimi) \
-	-Djsse.jar=$(find-jar jsse/jsse) \
-	clean compile javadocs
+CLASSPATH=$(build-classpath ecj tools)
+export CLASSPATH
+%ant dist
 
 %install
 rm -rf $RPM_BUILD_ROOT
