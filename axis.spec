@@ -16,6 +16,7 @@ Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
 Source1:	axis-build.properties
 Patch0:		axis-classpath.patch
+Patch1:		axis-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
 BuildRequires:	ant >= 1.6
 BuildRequires:	ant-nodeps
@@ -116,6 +117,7 @@ Podręcznik do pakietu %{name}.
 find -name '*.class' | xargs rm -v
 
 %patch0 -p1
+%patch1 -p1
 
 cp %SOURCE1 build.properties
 
