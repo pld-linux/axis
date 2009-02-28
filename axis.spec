@@ -9,10 +9,10 @@ Summary:	A SOAP implementation in Java
 Summary(pl.UTF-8):	Implementacja SOAP w Javie
 Name:		axis
 Version:	1.4
-Release:	0.1
+Release:	1
 License:	Apache Software License
 Group:		Development/Languages/Java
-Source0:	http://ws.apache.org/axis//dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
+Source0:	http://ws.apache.org/axis/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
 Source1:	axis-build.properties
 Patch0:		axis-classpath.patch
@@ -20,7 +20,7 @@ Patch1:		axis-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
 BuildRequires:	ant >= 1.6
 BuildRequires:	ant-nodeps
-BuildRequires:	jdk
+BuildRequires:	java-gcj-compat-devel
 # Mandatory requires
 BuildRequires:	jaf
 BuildRequires:	java-commons-discovery
@@ -37,8 +37,8 @@ BuildRequires:	wsdl4j
 BuildRequires:	castor
 BuildRequires:	httpunit
 BuildRequires:	jakarta-oro
-BuildRequires:	jimi
-BuildRequires:	jms
+# BuildRequires:	jimi
+# BuildRequires:	jms
 BuildRequires:	jsse
 BuildRequires:	junit
 Requires:	jaf
@@ -113,7 +113,7 @@ Podręcznik do pakietu %{name}.
 %setup -q -n %{name}-%{archivever}
 
 # Remove provided binaries
-# find -name '*.jar' | xargs rm -v
+find -name '*.jar' | xargs rm -v
 find -name '*.class' | xargs rm -v
 
 %patch0 -p1
