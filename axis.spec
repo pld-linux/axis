@@ -14,7 +14,6 @@ License:	Apache Software License
 Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
-Source1:	axis-build.properties
 Patch0:		axis-classpath.patch
 Patch1:		axis-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
@@ -22,31 +21,30 @@ BuildRequires:	ant >= 1.6
 BuildRequires:	ant-nodeps
 BuildRequires:	java-gcj-compat-devel
 # Mandatory requires
-BuildRequires:	jaf
-BuildRequires:	java-commons-discovery
-BuildRequires:	java-commons-httpclient
-BuildRequires:	java-commons-logging
-BuildRequires:	java-xmlbeans
-BuildRequires:	javamail
-BuildRequires:	jaxp_parser_impl
-BuildRequires:	jpackage-utils
-BuildRequires:	logging-log4j
-BuildRequires:	rpmbuild(macros) >= 1.300
-BuildRequires:	servletapi5
-BuildRequires:	wsdl4j
-# optional requires
-BuildRequires:	castor
-BuildRequires:	httpunit
-BuildRequires:	jakarta-oro
-# BuildRequires:	jimi
-# BuildRequires:	jms
-BuildRequires:	jsse
-BuildRequires:	junit
+# BuildRequires:	jaf
+# BuildRequires:	java-commons-discovery
+# BuildRequires:	java-commons-httpclient
+# BuildRequires:	java-commons-logging
+# BuildRequires:	java-xmlbeans
+# BuildRequires:	javamail
+# BuildRequires:	jaxp_parser_impl
+# BuildRequires:	jpackage-utils
+# BuildRequires:	logging-log4j
+# BuildRequires:	rpmbuild(macros) >= 1.300
+# BuildRequires:	servletapi5
+# BuildRequires:	wsdl4j
+# # optional requires
+# BuildRequires:	castor
+# BuildRequires:	httpunit
+# BuildRequires:	jakarta-oro
+# # BuildRequires:	jimi
+# # BuildRequires:	jms
+# BuildRequires:	jsse
+# BuildRequires:	junit
 Requires:	jaf
 Requires:	jakarta-commons-discovery
 Requires:	jakarta-commons-httpclient
 Requires:	jakarta-commons-logging
-Requires:	java
 Requires:	javamail
 Requires:	jaxp_parser_impl
 Requires:	logging-log4j
@@ -114,25 +112,27 @@ Podręcznik do pakietu %{name}.
 %setup -q -n %{name}-%{archivever}
 
 # Remove provided binaries
-find -name '*.jar' | xargs rm -v
+# find -name '*.jar' | xargs rm -v
 find -name '*.class' | xargs rm -v
 
 %patch0 -p1
 %patch1 -p1
 
-cp %SOURCE1 build.properties
-
 %build
-export JAVA_HOME=%{java_home}
+
+# requiredJars="activation bsf castor commons-codec commons-discovery commons-httpclient commons-logging httpunit jsse junit log4j mail xmlbeans servlet wsdl4j"
+# for I in $requiredJars; do
+#   ln -sf $(find-jar $I) lib/$I
+# done
 
 CLASSPATH=$(build-classpath ecj tools)
 export CLASSPATH
-%ant dist
+%ant -Dbuild.compiler=modern dist
 
 %install
 rm -rf $RPM_BUILD_ROOT
 ### Jar files
-install -d $RPM_BUILD_ROOT%{_javadir}/%{name}
+install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/lib
 
 cd build/lib
 install axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
