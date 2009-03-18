@@ -4,6 +4,8 @@
 # NOTE
 #  - it won't compile with java 1.6. see:
 #    https://fcp.surfsite.org/modules/newbb/viewtopic.php?topic_id=55862&viewmode=flat&order=ASC&start=20
+
+%bcond_with	java_sun
 %define archivever %(echo %{version} | tr . _)
 Summary:	A SOAP implementation in Java
 Summary(pl.UTF-8):	Implementacja SOAP w Javie
@@ -14,37 +16,41 @@ License:	Apache Software License
 Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
+Source1:	axis-build.properties
+Source2:	axis-build.xml
 Patch0:		axis-classpath.patch
 Patch1:		axis-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
 BuildRequires:	ant >= 1.6
 BuildRequires:	ant-nodeps
-BuildRequires:	java-gcj-compat-devel
+%{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
+%{?with_java_sun:BuildRequires:	java-sun <= 1.5}
 # Mandatory requires
-# BuildRequires:	jaf
-# BuildRequires:	java-commons-discovery
-# BuildRequires:	java-commons-httpclient
-# BuildRequires:	java-commons-logging
-# BuildRequires:	java-xmlbeans
-# BuildRequires:	javamail
-# BuildRequires:	jaxp_parser_impl
-# BuildRequires:	jpackage-utils
-# BuildRequires:	logging-log4j
-# BuildRequires:	rpmbuild(macros) >= 1.300
-# BuildRequires:	servletapi5
-# BuildRequires:	wsdl4j
-# # optional requires
-# BuildRequires:	castor
-# BuildRequires:	httpunit
-# BuildRequires:	jakarta-oro
-# # BuildRequires:	jimi
-# # BuildRequires:	jms
-# BuildRequires:	jsse
-# BuildRequires:	junit
+BuildRequires:	jaf
+BuildRequires:	java-commons-discovery
+BuildRequires:	java-commons-httpclient
+BuildRequires:	java-commons-logging
+BuildRequires:	java-xmlbeans
+BuildRequires:	javamail
+BuildRequires:	jaxp_parser_impl
+BuildRequires:	jpackage-utils
+BuildRequires:	logging-log4j
+BuildRequires:	rpmbuild(macros) >= 1.300
+BuildRequires:	servletapi5
+BuildRequires:	wsdl4j
+# optional requires
+BuildRequires:	castor
+BuildRequires:	httpunit
+BuildRequires:	jakarta-oro
+# BuildRequires:	jimi
+# BuildRequires:	jms
+BuildRequires:	jsse
+BuildRequires:	junit
 Requires:	jaf
 Requires:	jakarta-commons-discovery
 Requires:	jakarta-commons-httpclient
 Requires:	jakarta-commons-logging
+Requires:	java
 Requires:	javamail
 Requires:	jaxp_parser_impl
 Requires:	logging-log4j
@@ -112,27 +118,74 @@ Podręcznik do pakietu %{name}.
 %setup -q -n %{name}-%{archivever}
 
 # Remove provided binaries
-# find -name '*.jar' | xargs rm -v
+find -name '*.jar' | xargs rm -v
 find -name '*.class' | xargs rm -v
 
 %patch0 -p1
 %patch1 -p1
 
+#cp %{SOURCE1} build.properties
+cp %{SOURCE2} build.xml
+
 %build
+export JAVA_HOME=%{java_home}
+echo $JAVA_HOME
 
-# requiredJars="activation bsf castor commons-codec commons-discovery commons-httpclient commons-logging httpunit jsse junit log4j mail xmlbeans servlet wsdl4j"
-# for I in $requiredJars; do
-#   ln -sf $(find-jar $I) lib/$I
-# done
+activation_jar=$(find-jar activation)
+commons_logging_jar=$(find-jar commons-logging)
+commons_discovery_jar=$(find-jar commons-discovery)
+commons_httpclient_jar=$(find-jar commons-httpclient)
+commons_net_jar=$(find-jar commons-net)
+log4j_core_jar=$(find-jar log4j)
+jsse_jar=$(find-jar jsse)
+junit_jar=$(find-jar junit)
+mailapi_jar=$(find-jar mail)
+regexp_jar=$(find-jar oro)
+servlet_jar=$(find-jar servletapi5)
+tools_jar=$(find-jar tools)
+wsdl4j_jar=$(find-jar wsdl4j)
+xalan_jar=$(find-jar xalan)
+xerces_jar=$(find-jar xerces-j2)
+xercesImpl_jar=$(find-jar xercesImpl)
+xml_apis_jar=$(find-jar xml-commons-apis)
+xmlParsersAPIs_jar=$(find-jar xerces-j2)
+xmlbeans_jar=$(find-jar xmlbeans)
+libgcj_jar=$(find-jar libgcj)
 
-CLASSPATH=$(build-classpath ecj tools)
+#httpunit_jar=$(find-jar httpunit)
+#xmlunit_jar=$(find-jar xmlunit)
+#jimi_jar=$(find-jar jimi)
+
+CLASSPATH=$wsdl4j_jar:$commons_logging_jar:$commons_discovery_jar
+%{!?with_java_sun:CLASSPATH=$CLASSPATH:$(build-classpath ecj tools)}
 export CLASSPATH
-%ant -Dbuild.compiler=modern dist
+
+%ant dist \
+	-Dactivation.jar=$activation_jar \
+	-Dcommons-logging.jar=$commons_logging_jar \
+	-Dcommons-discovery.jar=$commons_discovery_jar \
+	-Dcommons-httpclient.jar=$commons_httpclient_jar \
+	-Dcommons-net.jar=$commons_net_jar \
+	-Dlog4j-core.jar=$log4j_core_jar \
+	-Djsse.jar=$jsse_jar \
+	-Djunit.jar=$junit_jar \
+	-Dmailapi.jar=$mailapi_jar \
+	-Dregexp.jar=$regexp_jar \
+	-Dservlet.jar=$servlet_jar \
+	-Dtools.jar=$tools_jar \
+	-Dwsdl4j.jar=$wsdl4j_jar \
+	-Dxalan.jar=$xalan_jar \
+	-Dxerces.jar=$xerces_jar \
+	-DxercesImpl.jar=$xercesImpl_jar \
+	-Dxml-apis.jar=$xml_apis_jar \
+	-DxmlParsersAPIs.jar=$xmlParsersAPIs_jar \
+	-Dxmlbeans.jar=$xmlbeans_jar \
+	-Dsun.boot.class.path="$libgcj_jar:[-org.w3c.dom/*]"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-### Jar files
-install -d $RPM_BUILD_ROOT%{_javadir}/%{name}/lib
+
+install -d $RPM_BUILD_ROOT%{_javadir}/%{name}
 
 cd build/lib
 install axis.jar axis-ant.jar saaj.jar jaxrpc.jar \
