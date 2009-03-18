@@ -1,6 +1,8 @@
 # TODO
 #  - castor is needed by axis-1.2.1-0.2jpp.1.noarch
 #  - package axis2, axis is obsolete. see NOTE below.
+#  - build samples
+#  - package war app
 # NOTE
 #  - it won't compile with java 1.6. see:
 #    https://fcp.surfsite.org/modules/newbb/viewtopic.php?topic_id=55862&viewmode=flat&order=ASC&start=20
@@ -12,49 +14,55 @@ Summary(pl.UTF-8):	Implementacja SOAP w Javie
 Name:		axis
 Version:	1.4
 Release:	0.1
-License:	Apache Software License
+License:	Apache
 Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
-Source1:	axis-build.xml
-Patch0:		axis-classpath.patch
-Patch1:		axis-missing_xsd.patch
+Source1:	%{name}-build.xml
+Patch0:		%{name}-classpath.patch
+Patch1:		%{name}-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
 BuildRequires:	ant >= 1.6
 BuildRequires:	ant-nodeps
 %{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
 %{?with_java_sun:BuildRequires:	java-sun <= 1.5}
-# Mandatory requires
+# BuildRequires:	jimi
+# BuildRequires:	jms
+BuildRequires:	httpunit
 BuildRequires:	jaf
 BuildRequires:	java-commons-discovery
 BuildRequires:	java-commons-httpclient
 BuildRequires:	java-commons-logging
+BuildRequires:	java-commons-net
+BuildRequires:	java-oro
+BuildRequires:	java-xalan
+BuildRequires:	java-xerces
+BuildRequires:	java-xml-commons
 BuildRequires:	java-xmlbeans
 BuildRequires:	javamail
-BuildRequires:	jaxp_parser_impl
 BuildRequires:	jpackage-utils
+BuildRequires:	jsse
+BuildRequires:	junit
 BuildRequires:	logging-log4j
 BuildRequires:	rpmbuild(macros) >= 1.300
 BuildRequires:	servletapi5
 BuildRequires:	wsdl4j
-# optional requires
-BuildRequires:	castor
-BuildRequires:	httpunit
-BuildRequires:	jakarta-oro
-# BuildRequires:	jimi
-# BuildRequires:	jms
-BuildRequires:	jsse
-BuildRequires:	junit
+Requires:	httpunit
 Requires:	jaf
-Requires:	jakarta-commons-discovery
-Requires:	jakarta-commons-httpclient
-Requires:	jakarta-commons-logging
-Requires:	java
+Requires:	java-commons-discovery
+Requires:	java-commons-httpclient
+Requires:	java-commons-logging
+Requires:	java-commons-net
+Requires:	java-oro
+Requires:	java-xalan
+Requires:	java-xerces
+Requires:	java-xml-commons
+Requires:	java-xmlbeans
 Requires:	javamail
-Requires:	jaxp_parser_impl
-Requires:	logging-log4j
 Requires:	jpackage-utils
-Requires:	log4j
+Requires:	jsse
+Requires:	logging-log4j
+Requires:	servletapi5
 Requires:	wsdl4j
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -148,7 +156,7 @@ xercesImpl_jar=$(find-jar xercesImpl)
 xml_apis_jar=$(find-jar xml-commons-apis)
 xmlParsersAPIs_jar=$(find-jar xerces-j2)
 xmlbeans_jar=$(find-jar xmlbeans)
-libgcj_jar=$(find-jar libgcj)
+%{!?with_java_sun:libgcj_jar=$(find-jar libgcj)}
 
 #httpunit_jar=$(find-jar httpunit)
 #xmlunit_jar=$(find-jar xmlunit)
@@ -178,7 +186,7 @@ export CLASSPATH
 	-Dxml-apis.jar=$xml_apis_jar \
 	-DxmlParsersAPIs.jar=$xmlParsersAPIs_jar \
 	-Dxmlbeans.jar=$xmlbeans_jar \
-	-Dsun.boot.class.path="$libgcj_jar:[-org.w3c.dom/*]"
+	%{!?with_java_sun:-Dsun.boot.class.path="$libgcj_jar:[-org.w3c.dom/*]"}
 
 %install
 rm -rf $RPM_BUILD_ROOT
