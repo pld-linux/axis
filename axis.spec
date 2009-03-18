@@ -16,8 +16,7 @@ License:	Apache Software License
 Group:		Development/Languages/Java
 Source0:	http://ws.apache.org/axis/dist/%{archivever}/%{name}-src-%{archivever}.tar.gz
 # Source0-md5:	3dcce3cbd37f52d70ebeb858f90608dc
-Source1:	axis-build.properties
-Source2:	axis-build.xml
+Source1:	axis-build.xml
 Patch0:		axis-classpath.patch
 Patch1:		axis-missing_xsd.patch
 URL:		http://ws.apache.org/axis/
@@ -124,8 +123,7 @@ find -name '*.class' | xargs rm -v
 %patch0 -p1
 %patch1 -p1
 
-#cp %{SOURCE1} build.properties
-cp %{SOURCE2} build.xml
+cp %{SOURCE1} build.xml
 
 %build
 export JAVA_HOME=%{java_home}
